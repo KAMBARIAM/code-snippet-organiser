@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Code Snippet Organizer</title>
+    <title>Code Snippet Vault</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
     <style>
         * {
@@ -20,7 +20,7 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1500px;
             margin: 0 auto;
             background: rgba(255, 255, 255, 0.95);
             border-radius: 20px;
@@ -262,7 +262,7 @@
 
         .snippet-header {
             display: flex;
-            justify-content: between;
+            justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
             padding-bottom: 15px;
@@ -272,7 +272,6 @@
         .snippet-actions {
             display: flex;
             gap: 10px;
-            margin-left: 20px;
         }
 
         .code-container {
@@ -333,6 +332,194 @@
             color: #333;
         }
 
+        .code-block-item {
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .code-block-header {
+            background: #f8f9fa;
+            padding: 10px 15px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .block-title {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-weight: 500;
+            padding: 5px 0;
+        }
+
+        .block-title:focus {
+            outline: none;
+            border-bottom: 1px solid #667eea;
+        }
+
+        .btn-remove-block {
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-remove-block:hover {
+            background: #c82333;
+        }
+
+        .block-code {
+            width: 100%;
+            border: none;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .block-code:focus {
+            outline: none;
+            background: #f8f9ff;
+        }
+
+        .multi-code-display {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .command-block {
+            background: #2d3748;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .command-header {
+            background: #4a5568;
+            padding: 10px 15px;
+            color: white;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .command-title {
+            font-weight: 500;
+        }
+
+        .command-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .command-copy-btn, .run-all-btn {
+            background: #667eea;
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.3s ease;
+        }
+
+        .command-copy-btn:hover, .run-all-btn:hover {
+            background: #5a6fd8;
+        }
+
+        .run-all-btn {
+            background: #28a745;
+            margin-bottom: 10px;
+        }
+
+        .run-all-btn:hover {
+            background: #218838;
+        }
+
+        .command-sequence-header {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #e9ecef;
+        }
+
+        .sequence-info {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .drag-handle {
+            color: #999;
+            cursor: grab;
+            padding: 0 5px;
+            font-size: 16px;
+        }
+
+        .drag-handle:active {
+            cursor: grabbing;
+        }
+
+        .code-block-item.dragging {
+            opacity: 0.5;
+        }
+
+        .execution-indicator {
+            position: absolute;
+            top: 10px;
+            right: 50px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #6c757d;
+        }
+
+        .execution-indicator.success {
+            background: #28a745;
+        }
+
+        .execution-indicator.error {
+            background: #dc3545;
+        }
+
+        .template-selector {
+            margin-bottom: 20px;
+        }
+
+        .template-btn {
+            background: #e9ecef;
+            border: 1px solid #dee2e6;
+            padding: 8px 16px;
+            margin: 5px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .template-btn:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
         @media (max-width: 768px) {
             .main-content {
                 grid-template-columns: 1fr;
@@ -348,7 +535,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🔧 Code Snippet Organizer</h1>
+            <h1>🔧 Code Snippet Vault</h1>
             <p>Save, organize, and manage your reusable code snippets locally</p>
         </div>
 
@@ -394,6 +581,7 @@
                                 <option value="">Select Language</option>
                                 <option value="javascript">JavaScript</option>
                                 <option value="python">Python</option>
+                                <option value="perl">Perl</option>
                                 <option value="html">HTML</option>
                                 <option value="css">CSS</option>
                                 <option value="bash">Bash</option>
@@ -407,19 +595,50 @@
                                 <option value="ruby">Ruby</option>
                                 <option value="go">Go</option>
                                 <option value="rust">Rust</option>
-                                <option value="perl">Perl</option>
                                 <option value="other">Other</option>
                             </select>
                         </div>
                         
                         <div class="form-group">
+                            <label for="snippetType">Snippet Type</label>
+                            <select id="snippetType">
+                                <option value="single">Single Code Block</option>
+                                <option value="multi">Multiple Commands/Code Blocks</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
                             <label for="tags">Tags (comma-separated)</label>
                             <input type="text" id="tags" placeholder="utility, helper, api">
                         </div>
-                        
-                        <div class="form-group">
+
+                        <div class="form-group" id="singleCodeGroup">
                             <label for="code">Code</label>
-                            <textarea id="code" required placeholder="Paste your code here..."></textarea>
+                            <textarea id="code" placeholder="Paste your code here..."></textarea>
+                        </div>
+
+                        <div class="form-group" id="multiCodeGroup" style="display: none;">
+                            <label>Commands/Code Blocks</label>
+                            
+                            <div class="template-selector">
+                                <strong>Quick Templates:</strong>
+                                <button type="button" class="template-btn" data-template="docker">Docker Setup</button>
+                                <button type="button" class="template-btn" data-template="git">Git Workflow</button>
+                                <button type="button" class="template-btn" data-template="npm">NPM Project</button>
+                                <button type="button" class="template-btn" data-template="server">Server Setup</button>
+                            </div>
+                            
+                            <div id="codeBlocks">
+                                <div class="code-block-item">
+                                    <div class="code-block-header">
+                                        <span class="drag-handle">⋮⋮</span>
+                                        <input type="text" class="block-title" placeholder="Command description (optional)">
+                                        <button type="button" class="btn-remove-block">×</button>
+                                    </div>
+                                    <textarea class="block-code" placeholder="Enter command or code..."></textarea>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-secondary" id="addBlockBtn">+ Add Another Block</button>
                         </div>
                         
                         <div class="form-actions">
@@ -445,12 +664,8 @@
                         </div>
                     </div>
                     
-                    <div class="code-container">
-                        <div class="code-header">
-                            <span id="codeLanguage"></span>
-                            <button class="copy-btn" id="copyBtn">Copy</button>
-                        </div>
-                        <pre><code id="displayCode"></code></pre>
+                    <div id="codeDisplay">
+                        <!-- Single code block or multiple code blocks will be rendered here -->
                     </div>
                 </div>
             </div>
@@ -463,7 +678,6 @@
     <script>
         class SnippetOrganizer {
             constructor() {
-                // Use in-memory storage for Claude.ai compatibility
                 this.snippets = [];
                 this.currentSnippet = null;
                 this.editingId = null;
@@ -477,34 +691,88 @@
                 this.updateFilters();
             }
 
-            // Storage methods (in-memory for Claude.ai)
             saveToStorage() {
-                // In a real browser environment, uncomment this:
                 localStorage.setItem('codeSnippets', JSON.stringify(this.snippets));
                 console.log('Snippets saved to memory:', this.snippets.length);
             }
 
             loadSnippets() {
-                // In a real browser environment, uncomment this:
+                const baseTime = 1672531200000;
                 const stored = localStorage.getItem('codeSnippets');
                 this.snippets = stored ? JSON.parse(stored) : [];
-                
-                // Demo data for Claude.ai
                 if (stored === null) {
                 this.snippets = [
                     {
-                        id: Date.now() - 1000,
+                        id: baseTime + 1000,
                         title: 'Array Shuffle Function',
                         language: 'javascript',
                         tags: ['utility', 'array', 'random'],
+                        type: 'single',
                         code: 'function shuffleArray(array) {\n  for (let i = array.length - 1; i > 0; i--) {\n    const j = Math.floor(Math.random() * (i + 1));\n    [array[i], array[j]] = [array[j], array[i]];\n  }\n  return array;\n}',
                         createdAt: new Date().toISOString()
                     },
                     {
-                        id: Date.now() - 2000,
+                        id: baseTime + 2000,
+                        title: 'Docker Container Management',
+                        language: 'bash',
+                        tags: ['docker', 'terminal', 'devops'],
+                        type: 'multi',
+                        codeBlocks: [
+                            {
+                                title: 'Build Docker image',
+                                code: 'docker build -t my-app:latest .'
+                            },
+                            {
+                                title: 'Run container with port mapping',
+                                code: 'docker run -d -p 3000:3000 --name my-app-container my-app:latest'
+                            },
+                            {
+                                title: 'View running containers',
+                                code: 'docker ps'
+                            },
+                            {
+                                title: 'View container logs',
+                                code: 'docker logs my-app-container'
+                            },
+                            {
+                                title: 'Stop and remove container',
+                                code: 'docker stop my-app-container && docker rm my-app-container'
+                            }
+                        ],
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        id: baseTime + 3000,
+                        title: 'Git Workflow Commands',
+                        language: 'bash',
+                        tags: ['git', 'version-control', 'workflow'],
+                        type: 'multi',
+                        codeBlocks: [
+                            {
+                                title: 'Check repository status',
+                                code: 'git status'
+                            },
+                            {
+                                title: 'Stage all changes',
+                                code: 'git add .'
+                            },
+                            {
+                                title: 'Commit with message',
+                                code: 'git commit -m "feat: add new feature"'
+                            },
+                            {
+                                title: 'Push to remote repository',
+                                code: 'git push origin main'
+                            }
+                        ],
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        id: baseTime + 4000,
                         title: 'Python List Comprehension',
                         language: 'python',
                         tags: ['python', 'list', 'functional'],
+                        type: 'single',
                         code: '# Filter and transform list\nfiltered_squares = [x**2 for x in range(10) if x % 2 == 0]\nprint(filtered_squares)  # [0, 4, 16, 36, 64]',
                         createdAt: new Date().toISOString()
                     }
@@ -513,28 +781,23 @@
             }
 
             setupEventListeners() {
-                // Add snippet button
                 document.getElementById('addSnippetBtn').addEventListener('click', () => {
                     this.showForm();
                 });
 
-                // Form submission
                 document.getElementById('snippetFormElement').addEventListener('submit', (e) => {
                     e.preventDefault();
                     this.saveSnippet();
                 });
 
-                // Cancel button
                 document.getElementById('cancelBtn').addEventListener('click', () => {
                     this.hideForm();
                 });
 
-                // Search input
                 document.getElementById('searchInput').addEventListener('input', (e) => {
                     this.filterSnippets(e.target.value);
                 });
 
-                // Edit and delete buttons
                 document.getElementById('editBtn').addEventListener('click', () => {
                     this.editSnippet(this.currentSnippet.id);
                 });
@@ -543,12 +806,6 @@
                     this.deleteSnippet(this.currentSnippet.id);
                 });
 
-                // Copy button
-                document.getElementById('copyBtn').addEventListener('click', () => {
-                    this.copyCode();
-                });
-
-                // Import/Export
                 document.getElementById('exportBtn').addEventListener('click', () => {
                     this.exportSnippets();
                 });
@@ -560,6 +817,135 @@
                 document.getElementById('fileInput').addEventListener('change', (e) => {
                     this.importSnippets(e.target.files[0]);
                 });
+
+                document.getElementById('snippetType').addEventListener('change', (e) => {
+                    this.toggleCodeInputType(e.target.value);
+                });
+
+                document.getElementById('addBlockBtn').addEventListener('click', () => {
+                    this.addCodeBlock();
+                });
+
+                document.querySelectorAll('.template-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        this.loadTemplate(btn.dataset.template);
+                    });
+                });
+            }
+
+            toggleCodeInputType(type) {
+                const singleGroup = document.getElementById('singleCodeGroup');
+                const multiGroup = document.getElementById('multiCodeGroup');
+                const codeTextarea = document.getElementById('code');
+                
+                if (type === 'multi') {
+                    singleGroup.style.display = 'none';
+                    multiGroup.style.display = 'block';
+                    codeTextarea.removeAttribute('required');
+                } else {
+                    singleGroup.style.display = 'block';
+                    multiGroup.style.display = 'none';
+                    codeTextarea.setAttribute('required', 'required');
+                }
+            }
+
+            addCodeBlock() {
+                const container = document.getElementById('codeBlocks');
+                const blockDiv = document.createElement('div');
+                blockDiv.className = 'code-block-item';
+                blockDiv.draggable = true;
+                blockDiv.innerHTML = `
+                    <div class="code-block-header">
+                        <span class="drag-handle">⋮⋮</span>
+                        <input type="text" class="block-title" placeholder="Command description (optional)">
+                        <button type="button" class="btn-remove-block">×</button>
+                    </div>
+                    <textarea class="block-code" placeholder="Enter command or code..."></textarea>
+                `;
+                
+                blockDiv.querySelector('.btn-remove-block').addEventListener('click', () => {
+                    if (container.children.length > 1) {
+                        blockDiv.remove();
+                    }
+                });
+                
+                this.addDragListeners(blockDiv);
+                container.appendChild(blockDiv);
+            }
+
+            addDragListeners(element) {
+                element.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.effectAllowed = 'move';
+                    e.dataTransfer.setData('text/html', element.outerHTML);
+                    element.classList.add('dragging');
+                });
+
+                element.addEventListener('dragend', () => {
+                    element.classList.remove('dragging');
+                });
+
+                element.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = 'move';
+                });
+
+                element.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    const draggedElement = document.querySelector('.dragging');
+                    if (draggedElement && draggedElement !== element) {
+                        const container = element.parentNode;
+                        const draggedIndex = Array.from(container.children).indexOf(draggedElement);
+                        const targetIndex = Array.from(container.children).indexOf(element);
+                        
+                        if (draggedIndex < targetIndex) {
+                            container.insertBefore(draggedElement, element.nextSibling);
+                        } else {
+                            container.insertBefore(draggedElement, element);
+                        }
+                    }
+                });
+            }
+
+            loadTemplate(templateName) {
+                const templates = {
+                    docker: [
+                        { title: 'Build Docker image', code: 'docker build -t my-app:latest .' },
+                        { title: 'Run container', code: 'docker run -d -p 3000:3000 --name my-app-container my-app:latest' },
+                        { title: 'View logs', code: 'docker logs my-app-container' },
+                        { title: 'Stop container', code: 'docker stop my-app-container' }
+                    ],
+                    git: [
+                        { title: 'Check status', code: 'git status' },
+                        { title: 'Add changes', code: 'git add .' },
+                        { title: 'Commit changes', code: 'git commit -m "Your commit message"' },
+                        { title: 'Push to remote', code: 'git push origin main' }
+                    ],
+                    npm: [
+                        { title: 'Initialize project', code: 'npm init -y' },
+                        { title: 'Install dependencies', code: 'npm install express' },
+                        { title: 'Install dev dependencies', code: 'npm install --save-dev nodemon' },
+                        { title: 'Start development', code: 'npm run dev' }
+                    ],
+                    server: [
+                        { title: 'Update system', code: 'sudo apt update && sudo apt upgrade -y' },
+                        { title: 'Install Node.js', code: 'curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash - && sudo apt-get install -y nodejs' },
+                        { title: 'Install PM2', code: 'sudo npm install -g pm2' },
+                        { title: 'Start application', code: 'pm2 start app.js --name "my-app"' }
+                    ]
+                };
+
+                const template = templates[templateName];
+                if (template) {
+                    const languageMap = {
+                        docker: 'bash',
+                        git: 'bash', 
+                        npm: 'bash',
+                        server: 'bash'
+                    };
+                    document.getElementById('language').value = languageMap[templateName];
+                    this.populateCodeBlocks(template);
+                    this.setupCodeBlockRemoveListeners();
+                }
             }
 
             showForm(snippet = null) {
@@ -568,19 +954,99 @@
                 document.getElementById('snippetForm').classList.add('active');
 
                 if (snippet) {
-                    // Editing existing snippet
                     this.editingId = snippet.id;
                     document.getElementById('formTitle').textContent = 'Edit Snippet';
                     document.getElementById('title').value = snippet.title;
                     document.getElementById('language').value = snippet.language;
                     document.getElementById('tags').value = snippet.tags.join(', ');
-                    document.getElementById('code').value = snippet.code;
+                    
+                    const snippetType = snippet.type || 'single';
+                    document.getElementById('snippetType').value = snippetType;
+                    this.toggleCodeInputType(snippetType);
+                    
+                    if (snippetType === 'multi' && snippet.codeBlocks) {
+                        this.populateCodeBlocks(snippet.codeBlocks);
+                    } else {
+                        document.getElementById('code').value = snippet.code || '';
+                    }
                 } else {
-                    // Adding new snippet
                     this.editingId = null;
                     document.getElementById('formTitle').textContent = 'Add New Snippet';
                     document.getElementById('snippetFormElement').reset();
+                    document.getElementById('snippetType').value = 'single';
+                    this.toggleCodeInputType('single');
+                    this.resetCodeBlocks();
                 }
+                
+                this.setupCodeBlockRemoveListeners();
+            }
+
+            populateCodeBlocks(codeBlocks) {
+                const container = document.getElementById('codeBlocks');
+                container.innerHTML = '';
+                
+                codeBlocks.forEach((block, index) => {
+                    const blockDiv = document.createElement('div');
+                    blockDiv.className = 'code-block-item';
+                    blockDiv.draggable = true;
+                    blockDiv.innerHTML = `
+                        <div class="code-block-header">
+                            <span class="drag-handle">⋮⋮</span>
+                            <input type="text" class="block-title" placeholder="Command description (optional)" value="${block.title || ''}">
+                            <button type="button" class="btn-remove-block">×</button>
+                        </div>
+                        <textarea class="block-code" placeholder="Enter command or code...">${block.code || ''}</textarea>
+                    `;
+                    
+                    blockDiv.querySelector('.btn-remove-block').addEventListener('click', () => {
+                        if (container.children.length > 1) {
+                            blockDiv.remove();
+                        }
+                    });
+                    
+                    this.addDragListeners(blockDiv);
+                    container.appendChild(blockDiv);
+                });
+                
+                if (codeBlocks.length === 0) {
+                    this.addCodeBlock();
+                }
+            }
+
+            resetCodeBlocks() {
+                const container = document.getElementById('codeBlocks');
+                const blockDiv = document.createElement('div');
+                blockDiv.className = 'code-block-item';
+                blockDiv.draggable = true;
+                blockDiv.innerHTML = `
+                    <div class="code-block-header">
+                        <span class="drag-handle">⋮⋮</span>
+                        <input type="text" class="block-title" placeholder="Command description (optional)">
+                        <button type="button" class="btn-remove-block">×</button>
+                    </div>
+                    <textarea class="block-code" placeholder="Enter command or code..."></textarea>
+                `;
+                
+                blockDiv.querySelector('.btn-remove-block').addEventListener('click', () => {
+                    if (container.children.length > 1) {
+                        blockDiv.remove();
+                    }
+                });
+                
+                this.addDragListeners(blockDiv);
+                container.innerHTML = '';
+                container.appendChild(blockDiv);
+            }
+
+            setupCodeBlockRemoveListeners() {
+                document.querySelectorAll('.btn-remove-block').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const container = document.getElementById('codeBlocks');
+                        if (container.children.length > 1) {
+                            e.target.closest('.code-block-item').remove();
+                        }
+                    });
+                });
             }
 
             hideForm() {
@@ -599,30 +1065,53 @@
                     .split(',')
                     .map(tag => tag.trim())
                     .filter(tag => tag);
-                const code = document.getElementById('code').value.trim();
+                const type = document.getElementById('snippetType').value;
 
-                if (!title || !language || !code) {
-                    alert('Please fill in all required fields');
+                if (!title || !language) {
+                    alert('Please fill in title and language');
                     return;
                 }
 
-                const snippet = {
+                let snippet = {
                     id: this.editingId || Date.now(),
                     title,
                     language,
                     tags,
-                    code,
+                    type,
                     createdAt: this.editingId ? 
                         this.snippets.find(s => s.id === this.editingId).createdAt :
                         new Date().toISOString()
                 };
 
+                if (type === 'multi') {
+                    const codeBlocks = [];
+                    document.querySelectorAll('.code-block-item').forEach(item => {
+                        const title = item.querySelector('.block-title').value.trim();
+                        const code = item.querySelector('.block-code').value.trim();
+                        if (code) {
+                            codeBlocks.push({ title, code });
+                        }
+                    });
+                    
+                    if (codeBlocks.length === 0) {
+                        alert('Please add at least one code block');
+                        return;
+                    }
+                    
+                    snippet.codeBlocks = codeBlocks;
+                } else {
+                    const code = document.getElementById('code').value.trim();
+                    if (!code) {
+                        alert('Please enter code');
+                        return;
+                    }
+                    snippet.code = code;
+                }
+
                 if (this.editingId) {
-                    // Update existing snippet
                     const index = this.snippets.findIndex(s => s.id === this.editingId);
                     this.snippets[index] = snippet;
                 } else {
-                    // Add new snippet
                     this.snippets.unshift(snippet);
                 }
 
@@ -677,7 +1166,6 @@
                     </div>
                 `).join('');
 
-                // Add click listeners
                 container.querySelectorAll('.snippet-item').forEach(item => {
                     item.addEventListener('click', () => {
                         const id = parseInt(item.dataset.id);
@@ -686,7 +1174,6 @@
                     });
                 });
 
-                // Display first snippet if none selected
                 if (!this.currentSnippet && snippetsToRender.length > 0) {
                     this.displaySnippet(snippetsToRender[0]);
                 }
@@ -695,41 +1182,114 @@
             displaySnippet(snippet) {
                 this.currentSnippet = snippet;
                 
-                // Update active state
                 document.querySelectorAll('.snippet-item').forEach(item => {
                     item.classList.toggle('active', parseInt(item.dataset.id) === snippet.id);
                 });
 
-                // Show snippet display
                 document.getElementById('welcomeMessage').style.display = 'none';
                 document.getElementById('snippetForm').classList.remove('active');
                 document.getElementById('snippetDisplay').classList.add('active');
 
-                // Update display content
                 document.getElementById('displayTitle').textContent = snippet.title;
                 document.getElementById('displayLanguage').textContent = snippet.language;
                 document.getElementById('displayDate').textContent = new Date(snippet.createdAt).toLocaleDateString();
                 document.getElementById('displayTags').innerHTML = 
                     snippet.tags.map(tag => `<span class="tag">${tag}</span>`).join('');
-                document.getElementById('codeLanguage').textContent = snippet.language;
                 
-                const codeElement = document.getElementById('displayCode');
-                codeElement.textContent = snippet.code;
-                codeElement.className = `language-${snippet.language}`;
+                const codeDisplay = document.getElementById('codeDisplay');
                 
-                // Apply syntax highlighting
-                if (window.Prism) {
-                    Prism.highlightElement(codeElement);
+                if (snippet.type === 'multi' && snippet.codeBlocks) {
+                    codeDisplay.innerHTML = `
+                        <div class="command-sequence-header">
+                            <div class="sequence-info">
+                                <strong>${snippet.codeBlocks.length} Commands</strong> • Click individual copy buttons or copy all below
+                            </div>
+                            <button class="run-all-btn" data-all-code="${this.escapeHtml(snippet.codeBlocks.map(b => b.code).join('\n'))}">📋 Copy All</button>
+                        </div>
+                        <div class="multi-code-display">
+                            ${snippet.codeBlocks.map((block, index) => `
+                                <div class="command-block">
+                                    <div class="command-header">
+                                        <span class="command-title">${block.title || `Command ${index + 1}`}</span>
+                                        <div class="command-actions">
+                                            <span class="execution-indicator" id="exec-${index}"></span>
+                                            <button class="command-copy-btn" data-code="${this.escapeHtml(block.code)}" data-index="${index}">Copy</button>
+                                        </div>
+                                    </div>
+                                    <pre><code class="language-${snippet.language}">${this.escapeHtml(block.code)}</code></pre>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                } else {
+                    codeDisplay.innerHTML = `
+                        <div class="code-container">
+                            <div class="code-header">
+                                <span>${snippet.language}</span>
+                                <button class="copy-btn" data-code="${this.escapeHtml(snippet.code)}">Copy</button>
+                            </div>
+                            <pre><code class="language-${snippet.language}">${this.escapeHtml(snippet.code)}</code></pre>
+                        </div>
+                    `;
                 }
+                
+                if (window.Prism) {
+                    codeDisplay.querySelectorAll('code').forEach(codeElement => {
+                        Prism.highlightElement(codeElement);
+                    });
+                }
+                
+                codeDisplay.querySelectorAll('.copy-btn, .command-copy-btn, .run-all-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const code = btn.dataset.code || btn.dataset.allCode;
+                        const index = btn.dataset.index;
+                        
+                        navigator.clipboard.writeText(code).then(() => {
+                            const originalText = btn.textContent;
+                            btn.textContent = 'Copied!';
+                            
+                            if (index !== undefined) {
+                                const indicator = document.getElementById(`exec-${index}`);
+                                if (indicator) {
+                                    indicator.classList.add('success');
+                                    setTimeout(() => {
+                                        indicator.classList.remove('success');
+                                    }, 3000);
+                                }
+                            }
+                            
+                            setTimeout(() => {
+                                btn.textContent = originalText;
+                            }, 2000);
+                        });
+                    });
+                });
+            }
+
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
             }
 
             filterSnippets(searchTerm) {
                 const filtered = this.snippets.filter(snippet => {
                     const searchLower = searchTerm.toLowerCase();
-                    return snippet.title.toLowerCase().includes(searchLower) ||
-                           snippet.language.toLowerCase().includes(searchLower) ||
-                           snippet.tags.some(tag => tag.toLowerCase().includes(searchLower)) ||
-                           snippet.code.toLowerCase().includes(searchLower);
+                    const titleMatch = snippet.title.toLowerCase().includes(searchLower);
+                    const languageMatch = snippet.language.toLowerCase().includes(searchLower);
+                    const tagsMatch = snippet.tags.some(tag => tag.toLowerCase().includes(searchLower));
+                    
+                    let codeMatch = false;
+                    if (snippet.type === 'multi' && snippet.codeBlocks) {
+                        codeMatch = snippet.codeBlocks.some(block => 
+                            block.code.toLowerCase().includes(searchLower) ||
+                            (block.title && block.title.toLowerCase().includes(searchLower))
+                        );
+                    } else if (snippet.code) {
+                        codeMatch = snippet.code.toLowerCase().includes(searchLower);
+                    }
+                    
+                    return titleMatch || languageMatch || tagsMatch || codeMatch;
                 });
                 this.renderSnippets(filtered);
             }
@@ -739,7 +1299,6 @@
                 const tags = [...new Set(this.snippets.flatMap(s => s.tags))];
                 
                 const filtersContainer = document.getElementById('filters');
-                const existingFilters = filtersContainer.innerHTML;
                 
                 const newFilters = [
                     ...languages.map(lang => `<button class="filter-btn" data-filter="language:${lang}">${lang}</button>`),
@@ -748,14 +1307,11 @@
                 
                 filtersContainer.innerHTML = `<button class="filter-btn active" data-filter="all">All</button>${newFilters}`;
                 
-                // Add filter event listeners
                 filtersContainer.querySelectorAll('.filter-btn').forEach(btn => {
                     btn.addEventListener('click', () => {
-                        // Update active state
                         filtersContainer.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
                         btn.classList.add('active');
                         
-                        // Apply filter
                         const filter = btn.dataset.filter;
                         if (filter === 'all') {
                             this.renderSnippets();
@@ -771,14 +1327,18 @@
             }
 
             copyCode() {
-                const code = this.currentSnippet.code;
+                let code;
+                if (this.currentSnippet.type === 'multi' && this.currentSnippet.codeBlocks) {
+                    code = this.currentSnippet.codeBlocks.map(block => {
+                        const title = block.title ? `# ${block.title}\n` : '';
+                        return title + block.code;
+                    }).join('\n\n');
+                } else {
+                    code = this.currentSnippet.code;
+                }
+                
                 navigator.clipboard.writeText(code).then(() => {
-                    const btn = document.getElementById('copyBtn');
-                    const originalText = btn.textContent;
-                    btn.textContent = 'Copied!';
-                    setTimeout(() => {
-                        btn.textContent = originalText;
-                    }, 2000);
+                    console.log('Code copied to clipboard');
                 });
             }
 
@@ -801,7 +1361,6 @@
                     try {
                         const imported = JSON.parse(e.target.result);
                         if (Array.isArray(imported)) {
-                            // Add imported snippets with new IDs to avoid conflicts
                             const newSnippets = imported.map(snippet => ({
                                 ...snippet,
                                 id: Date.now() + Math.random()
@@ -820,7 +1379,6 @@
             }
         }
 
-        // Initialize the app
         document.addEventListener('DOMContentLoaded', () => {
             new SnippetOrganizer();
         });
